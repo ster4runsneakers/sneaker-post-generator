@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="el">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sneaker Post Generator</title>
+    <style>
+        body { font-family: sans-serif; max-width: 800px; margin: auto; padding: 20px; background-color: #f4f4f9; }
+        h1 { color: #333; }
+        textarea, select { width: 100%; padding: 8px; margin-bottom: 10px; border-radius: 4px; border: 1px solid #ddd; }
+        input[type="submit"] { background-color: #007bff; color: white; padding: 10px 20px; border: none; cursor: pointer; border-radius: 4px; }
+        .result-container { position: relative; }
+        pre { background-color: #fff; padding: 15px; white-space: pre-wrap; word-wrap: break-word; border-left: 5px solid #007bff; border-radius: 4px; }
+        .copy-button { position: absolute; top: 10px; right: 10px; background-color: #6c757d; color: white; border: none; padding: 5px 10px; cursor: pointer; border-radius: 4px; }
+    </style>
+</head>
+<body>
+    <h1>🤖 Δημιουργός Δημοσιεύσεων για Sneakers</h1>
+    <form method="post">
+        <label for="sneaker_name">Όνομα Sneaker:</label><br>
+        <textarea id="sneaker_name" name="sneaker_name" required></textarea><br>
+
+        <label for="language">Γλώσσα:</label><br>
+        <select name="language" id="language">
+            <option value="Greek">Ελληνικά</option>
+            <option value="English">English</option>
+        </select><br>
+
+        <label for="tone">Τόνος / Ύφος:</label><br>
+        <select name="tone" id="tone">
+            <option value="Hype / Enthusiastic">Hype / Ενθουσιώδες</option>
+            <option value="Professional">Επαγγελματικό</option>
+            <option value="Funny">Αστείο</option>
+            <option value="Informative">Ενημερωτικό</option>
+        </select><br><br>
+
+        <input type="submit" value="Δημιούργησε Περιεχόμενο">
+    </form>
+
+    {% if result %}
+    <h2>Η πρόταση της AI:</h2>
+    <div class="result-container">
+        <pre id="ai-result">{{ result }}</pre>
+        <button class="copy-button" onclick="copyText()">Αντιγραφή</button>
+    </div>
+    {% endif %}
+
+    <script>
+        function copyText() {
+            // Βρίσκει το στοιχείο με το κείμενο
+            const textToCopy = document.getElementById('ai-result').innerText;
+            
+            // Χρησιμοποιεί τον browser για να αντιγράψει το κείμενο
+            navigator.clipboard.writeText(textToCopy).then(() => {
+                // Όταν η αντιγραφή πετύχει, αλλάζει προσωρινά το κείμενο του κουμπιού
+                const copyButton = document.querySelector('.copy-button');
+                copyButton.innerText = 'Αντιγράφηκε!';
+                
+                // Το επαναφέρει μετά από 2 δευτερόλεπτα
+                setTimeout(() => {
+                    copyButton.innerText = 'Αντιγραφή';
+                }, 2000);
+            }).catch(err => {
+                console.error('Failed to copy text: ', err);
+            });
+        }
+    </script>
+    </body>
+</html>
