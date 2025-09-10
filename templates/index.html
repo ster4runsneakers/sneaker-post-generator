@@ -7,7 +7,7 @@
     <style>
         body { font-family: sans-serif; max-width: 800px; margin: auto; padding: 20px; background-color: #f4f4f9; }
         h1, h2, h3 { color: #333; }
-        textarea, select { width: 100%; padding: 8px; margin-bottom: 10px; border-radius: 4px; border: 1px solid #ddd; }
+        textarea, select, input[type="file"] { width: 100%; padding: 8px; margin-bottom: 10px; border-radius: 4px; border: 1px solid #ddd; box-sizing: border-box; }
         input[type="submit"] { background-color: #007bff; color: white; padding: 10px 20px; border: none; cursor: pointer; border-radius: 4px; font-size: 16px; }
         .result-container { position: relative; margin-bottom: 20px; }
         pre { background-color: #fff; padding: 15px; white-space: pre-wrap; word-wrap: break-word; border-left: 5px solid #007bff; border-radius: 4px; }
@@ -16,14 +16,19 @@
 </head>
 <body>
     <h1>🤖 Δημιουργός Δημοσιεύσεων για Sneakers</h1>
-    <form method="post">
+    
+    <form method="post" enctype="multipart/form-data">
         <label for="sneaker_name">Όνομα Sneaker:</label><br>
         <textarea id="sneaker_name" name="sneaker_name" required></textarea><br>
+
+        <label for="images">Ανέβασε Εικόνες (έως 5):</label><br>
+        <input type="file" id="images" name="images" multiple accept="image/*"><br><br>
         <label for="language">Γλώσσα:</label><br>
         <select name="language" id="language">
             <option value="Greek">Ελληνικά</option>
             <option value="English">English</option>
         </select><br>
+
         <label for="tone">Τόνος / Ύφος:</label><br>
         <select name="tone" id="tone">
             <option value="Hype / Enthusiastic">Hype / Ενθουσιώδες</option>
@@ -31,24 +36,22 @@
             <option value="Funny">Αστείο</option>
             <option value="Informative">Ενημερωτικό</option>
         </select><br><br>
+
         <input type="submit" value="Δημιούργησε Περιεχόμενο">
     </form>
 
     {% if result %}
     <h2>Η πρόταση της AI:</h2>
-
     <div class="result-container">
         <h3>Hooks</h3>
         <pre id="hooks-text">{{ result.hooks }}</pre>
         <button class="copy-button" onclick="copyText('hooks-text', this)">Αντιγραφή</button>
     </div>
-
     <div class="result-container">
         <h3>Caption</h3>
         <pre id="caption-text">{{ result.caption }}</pre>
         <button class="copy-button" onclick="copyText('caption-text', this)">Αντιγραφή</button>
     </div>
-
     <div class="result-container">
         <h3>Hashtags</h3>
         <pre id="hashtags-text">{{ result.hashtags }}</pre>
@@ -59,15 +62,10 @@
     <script>
         function copyText(elementId, buttonElement) {
             const textToCopy = document.getElementById(elementId).innerText;
-            
             navigator.clipboard.writeText(textToCopy).then(() => {
                 buttonElement.innerText = 'Αντιγράφηκε!';
-                setTimeout(() => {
-                    buttonElement.innerText = 'Αντιγραφή';
-                }, 2000);
-            }).catch(err => {
-                console.error('Failed to copy text: ', err);
-            });
+                setTimeout(() => { buttonElement.innerText = 'Αντιγραφή'; }, 2000);
+            }).catch(err => { console.error('Failed to copy text: ', err); });
         }
     </script>
 </body>
