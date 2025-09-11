@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="el">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Κατάσταση Δημιουργίας Video</title>
+    <style>
+        body { font-family: sans-serif; background-color: #f4f4f9; color: #333; text-align: center; padding: 50px; }
+        .container { background-color: #fff; padding: 30px; border-radius: 10px; box-shadow: 0 4px 8px rgba(0,0,0,0.1); display: inline-block; }
+        h1 { color: #5a5a5a; }
+        #status-message { font-size: 1.2em; color: #e74c3c; } /* Κόκκινο για το σφάλμα */
+        video { max-width: 100%; border-radius: 8px; margin-top: 20px; }
+        .loader { border: 8px solid #f3f3f3; border-radius: 50%; border-top: 8px solid #3498db; width: 60px; height: 60px; animation: spin 2s linear infinite; margin: 20px auto; }
+        @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div id="processing-view">
+            <h1>Το βίντεό σας δημιουργείται...</h1>
+            <div class="loader"></div>
+            <p id="status-message">Αναμονή για έναρξη...</p>
+        </div>
+
+        <div id="video-view" style="display: none;">
+            <h1>Το βίντεό σας είναι έτοιμο!</h1>
+            <div id="video-container"></div>
+            <a href="" id="download-link" download>Λήψη Βίντεο</a>
+        </div>
+    </div>
+
+    <script>
+        const renderId = "{{ render_id }}";
+        const statusMessage = document.getElementById('status-message');
+        const videoContainer = document.getElementById('video-container');
+        const processingView = document.getElementById('processing-view');
+        const videoView = document.getElementById('video-view');
+        const downloadLink = document.getElementById('download-link');
+
+        async function checkStatus() {
+            try {
+                const response = await fetch(`/get-status/${renderId}`);
+                const data = await response.json();
+
+                if (data.status === 'done') {
+                    clearInterval(statusInterval);
+                    processingView.style.display = 'none';
+                    videoView.style.display = 'block';
+                    
+                    const videoElement = document.createElement('video');
+                    videoElement.src = data.url;
+                    videoElement.controls = true;
+                    videoContainer.appendChild(videoElement);
+                    downloadLink.href = data.url;
+
+                } else if (data.status === 'failed') {
+                    clearInterval(statusInterval);
+                    // --- ΑΛΛΑΓΗ ΕΔΩ: Δείχνουμε το αναλυτικό σφάλμα ---
+                    const errorMessage = data.error || "Άγνωστο σφάλμα. Παρακαλώ δοκιμάστε ξανά.";
+                    statusMessage.innerHTML = `<strong>Η δημιουργία απέτυχε:</strong><br>${errorMessage}`;
+                } else {
+                    statusMessage.textContent = `Κατάσταση: ${data.status}`;
+                }
+            } catch (error) {
+                console.error('Error fetching status:', error);
+                clearInterval(statusInterval);
+                statusMessage.textContent = "Σφάλμα κατά τον έλεγχο της κατάστασης.";
+            }
+        }
+
+        const statusInterval = setInterval(checkStatus, 3000);
+        checkStatus();
+    </script>
+</body>
+</html>
