@@ -3,70 +3,33 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Sneaker Post Generator</title>
+    <title>Δημιουργός Video για Sneakers</title>
     <style>
-        body { font-family: sans-serif; max-width: 800px; margin: auto; padding: 20px; background-color: #f4f4f9; }
-        h1, h2, h3 { color: #333; }
-        textarea, select, input[type="file"] { width: 100%; padding: 8px; margin-bottom: 10px; border-radius: 4px; border: 1px solid #ddd; box-sizing: border-box; }
-        input[type="submit"] { background-color: #007bff; color: white; padding: 10px 20px; border: none; cursor: pointer; border-radius: 4px; font-size: 16px; }
-        .result-container { position: relative; margin-bottom: 20px; }
-        pre { background-color: #fff; padding: 15px; white-space: pre-wrap; word-wrap: break-word; border-left: 5px solid #007bff; border-radius: 4px; }
-        .copy-button { position: absolute; top: 10px; right: 10px; background-color: #6c757d; color: white; border: none; padding: 5px 10px; cursor: pointer; border-radius: 4px; }
+        body { font-family: sans-serif; background-color: #f4f4f9; color: #333; text-align: center; padding: 50px; }
+        .container { background-color: #fff; padding: 30px; border-radius: 10px; box-shadow: 0 4px 8px rgba(0,0,0,0.1); display: inline-block; }
+        h1 { color: #5a5a5a; }
+        select, input[type="file"], button { width: 100%; padding: 12px; margin-top: 10px; border-radius: 5px; border: 1px solid #ddd; box-sizing: border-box; }
+        button { background-color: #007bff; color: white; font-size: 16px; border: none; cursor: pointer; transition: background-color 0.3s; }
+        button:hover { background-color: #0056b3; }
+        label { margin-top: 20px; display: block; font-weight: bold; text-align: left; }
     </style>
 </head>
 <body>
-    <h1>🤖 Δημιουργός Δημοσιεύσεων για Sneakers</h1>
-    
-    <form method="post" enctype="multipart/form-data">
-        <label for="sneaker_name">Όνομα Sneaker:</label><br>
-        <textarea id="sneaker_name" name="sneaker_name" required></textarea><br>
+    <div class="container">
+        <h1>Δημιουργία Video για το Sneaker σου</h1>
+        <form action="/" method="post" enctype="multipart/form-data">
+            
+            <label for="platform">1. Επίλεξε Πλατφόρμα:</label>
+            <select name="platform" id="platform" required>
+                <option value="vertical">TikTok / Instagram Reel / YouTube Short / Pinterest</option>
+                <option value="square">Facebook Post</option>
+            </select>
 
-        <label for="images">Ανέβασε Εικόνες (έως 5):</label><br>
-        <input type="file" id="images" name="images" multiple accept="image/*"><br><br>
-        <label for="language">Γλώσσα:</label><br>
-        <select name="language" id="language">
-            <option value="Greek">Ελληνικά</option>
-            <option value="English">English</option>
-        </select><br>
+            <label for="image">2. Ανέβασε τη Φωτογραφία σου:</label>
+            <input type="file" name="image" id="image" accept="image/*" required>
 
-        <label for="tone">Τόνος / Ύφος:</label><br>
-        <select name="tone" id="tone">
-            <option value="Hype / Enthusiastic">Hype / Ενθουσιώδες</option>
-            <option value="Professional">Επαγγελματικό</option>
-            <option value="Funny">Αστείο</option>
-            <option value="Informative">Ενημερωτικό</option>
-        </select><br><br>
-
-        <input type="submit" value="Δημιούργησε Περιεχόμενο">
-    </form>
-
-    {% if result %}
-    <h2>Η πρόταση της AI:</h2>
-    <div class="result-container">
-        <h3>Hooks</h3>
-        <pre id="hooks-text">{{ result.hooks }}</pre>
-        <button class="copy-button" onclick="copyText('hooks-text', this)">Αντιγραφή</button>
+            <button type="submit">Δημιουργία Video</button>
+        </form>
     </div>
-    <div class="result-container">
-        <h3>Caption</h3>
-        <pre id="caption-text">{{ result.caption }}</pre>
-        <button class="copy-button" onclick="copyText('caption-text', this)">Αντιγραφή</button>
-    </div>
-    <div class="result-container">
-        <h3>Hashtags</h3>
-        <pre id="hashtags-text">{{ result.hashtags }}</pre>
-        <button class="copy-button" onclick="copyText('hashtags-text', this)">Αντιγραφή</button>
-    </div>
-    {% endif %}
-
-    <script>
-        function copyText(elementId, buttonElement) {
-            const textToCopy = document.getElementById(elementId).innerText;
-            navigator.clipboard.writeText(textToCopy).then(() => {
-                buttonElement.innerText = 'Αντιγράφηκε!';
-                setTimeout(() => { buttonElement.innerText = 'Αντιγραφή'; }, 2000);
-            }).catch(err => { console.error('Failed to copy text: ', err); });
-        }
-    </script>
 </body>
 </html>
